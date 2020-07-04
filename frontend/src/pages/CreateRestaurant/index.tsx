@@ -10,7 +10,6 @@ import './styles.css';
 
 import logo from '../../assets/logo.svg';
 
-
 interface IBGEUFResponse {
     sigla: string;
 }
@@ -22,11 +21,12 @@ interface IBGECityResponse {
 const CreateRestaurant = () => {
     const [ufs, setUfs] = useState<string[]>([]);
     const [cities, setCities] = useState<string[]>([]);
-    const [times, setTimes] = useState<string[]>([]);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        whatsapp: ''
+        whatsapp: '',
+        adress: '',
+        password: ''
     });
     const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0]);
     const [selectedUf, setSelectedUf] = useState('0');
@@ -88,10 +88,10 @@ const CreateRestaurant = () => {
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
-        const { name, email, whatsapp } = formData;
+        const { name, email, whatsapp, adress, password } = formData;
         const uf = selectedUf;
         const city = selectedCity;
-        const time = selectedTime;
+        const maxWaitTime = selectedTime;
         const [latitude, longitude] = selectedPosition;
         const data = {
             name,
@@ -100,10 +100,23 @@ const CreateRestaurant = () => {
             uf,
             city,
             latitude,
-            longitude
+            longitude,
+            maxWaitTime,
+            adress,
+            password
         };
-        await api.post('points', data);
-        alert('ponto de coleta criado');
+        console.log(data);
+        if (data.name === ''){ return alert('O campo Nome é obrigatório!') };
+        if (data.email === ''){ return alert('O campo E-mail é obrigatório!') };
+        if (data.whatsapp === ''){ return alert('O campo Whatsapp é obrigatório!') };
+        if (data.uf === '0'){ return alert('O campo Estado(UF) é obrigatório!') };
+        if (data.city === '0'){ return alert('O campo cidade é obrigatório!') };
+        if (data.latitude === 0){ return alert('É necessário selecionar um ponto no mapa!') };
+        if (data.longitude === 0){ return alert('É necessário selecionar um ponto no mapa!') };
+        if (data.adress === ''){ return alert('O campo Endereço é obrigatório!') };
+        if (data.password === ''){ return alert('O campo Senha é obrigatório!') };
+        await api.post('restaurants', data);
+        alert('Restaurante cadastrado');
     }
 
     return (
@@ -119,7 +132,7 @@ const CreateRestaurant = () => {
                 <h1>Cadastro do Restaurante</h1>
                 <fieldset>
                     <legend>
-                        <h2>Dados</h2>
+                        <h2>Contato</h2>
                     </legend>
                     <div className="field">
                         <label htmlFor="name">Nome do Restaurante</label>
