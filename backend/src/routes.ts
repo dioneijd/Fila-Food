@@ -1,16 +1,14 @@
-import express from 'express';
+import express from 'express'
 
-import RestaurantsController from './controllers/RestaurantsController'
-import ItemsController from './controllers/ItemsController'
+import CustomerController from './controllers/CustomerController'
 
-const routes = express.Router();
-const restaurantsController = new RestaurantsController();
-const itemsController = new ItemsController();
+const routes = express.Router()
 
-routes.get('/items', itemsController.index);
+const customerController = new CustomerController()
 
-routes.get('/restaurants', restaurantsController.index);
-routes.get('/restaurants/:id', restaurantsController.show);
-routes.post('/restaurants', restaurantsController.create);
+routes.get('/customers', customerController.index)
+routes.get('/customers/:id', customerController.show)
+routes.post('/customers', customerController.store)
+routes.put('/customers/:id', customerController.update)
 
-export default routes;
+export default routes
