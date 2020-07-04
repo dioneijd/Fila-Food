@@ -1,16 +1,37 @@
-import express from 'express';
+import express from 'express'
 
 import RestaurantsController from './controllers/RestaurantsController'
-import ItemsController from './controllers/ItemsController'
+import CustomersController from './controllers/CustomersController'
+import QueuesController from './controllers/QueuesController'
+import TablesController from './controllers/TablesController'
 
-const routes = express.Router();
-const restaurantsController = new RestaurantsController();
-const itemsController = new ItemsController();
+const routes = express.Router()
 
-routes.get('/items', itemsController.index);
+const restaurantsController = new RestaurantsController()
+const customersController = new CustomersController()
+const tablesController = new TablesController()
+const queuesController = new QueuesController()
 
-routes.get('/restaurants', restaurantsController.index);
-routes.get('/restaurants/:id', restaurantsController.show);
-routes.post('/restaurants', restaurantsController.create);
+routes.get('/restaurants', restaurantsController.index)
+routes.get('/restaurants/:id', restaurantsController.show)
+routes.post('/restaurants', restaurantsController.store)
+routes.put('/restaurants/:id', restaurantsController.update)
 
-export default routes;
+routes.get('/customers', customersController.index)
+routes.get('/customers/:id', customersController.show)
+routes.post('/customers', customersController.store)
+routes.put('/customers/:id', customersController.update)
+
+routes.get('/tables', tablesController.index)
+routes.get('/tables/:id', tablesController.show)
+routes.post('/tables', tablesController.store)
+routes.put('/tables/:id', tablesController.update)
+routes.delete('/tables/:id', tablesController.destroy)
+
+routes.get('/queues', queuesController.index)
+routes.get('/queues/:id', queuesController.show)
+routes.post('/queues', queuesController.store)
+routes.put('/queues/:id', queuesController.update)
+routes.delete('/queues/:id', queuesController.destroy)
+
+export default routes

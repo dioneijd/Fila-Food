@@ -1,46 +1,46 @@
 import { Request, Response } from 'express'
 import knex from '../database/connection'
 
-class RestaurantsController {
+class CustomersController  {
     async index(request: Request, response: Response) {
-        const restaurants = await knex('RESTAURANTS')
-        return response.json(restaurants)
+        return response.status(501).json({error: 'Not Implemented'})
     }
 
     async show(request: Request, response: Response) {
         const { id } = request.params;
 
-        const restaurant = await knex('RESTAURANTS').where('idRestaurant', id).first();
+        const customerId = await knex('CUSTOMERS').where('idCustomer', id).first();
 
-        if (!restaurant) return response.status(400).json({ message: 'Restaurant not found' })
+        if (!customerId) return response.status(400).json({ message: 'Customer not found' })
         
-        return response.json(restaurant)     
+        return response.json(customerId)        
     }
-
-    async store(request: Request, response: Response) {     
+    
+    async store(request: Request, response: Response) {        
         const trx = await knex.transaction()
-        const { email, password, name, maxWaitTime } = request.body
+        const { email, password, name } = request.body
         
-        const restaurant = {
+        const customer = {
             email,
             password,
             name,
-            maxWaitTime
         }
     
-        const insertedIds = await trx('RESTAURANTS').insert(restaurant)
-        const ret = {idRestaurant: insertedIds[0], ...restaurant}
+        const insertedIds = await trx('CUSTOMERS').insert(customer)
+        const ret = {idCustomer: insertedIds[0], ...customer}
 
         await trx.commit()
     
         return response.json(ret)
     }
+
     async update(request: Request, response: Response) {
         return response.status(501).json({error: 'Not Implemented'})        
     }
+    
     async destroy(request: Request, response: Response) {
         return response.status(501).json({error: 'Not Implemented'})        
     }
 }
 
-export default RestaurantsController
+export default CustomersController
