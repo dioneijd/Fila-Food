@@ -3,11 +3,13 @@ import express from 'express'
 import RestaurantsController from './controllers/RestaurantsController'
 import CustomersController from './controllers/CustomersController'
 import QueuesController from './controllers/QueuesController'
+import TablesController from './controllers/TablesController'
 
 const routes = express.Router()
 
 const restaurantsController = new RestaurantsController()
 const customersController = new CustomersController()
+const tablesController = new TablesController()
 const queuesController = new QueuesController()
 
 routes.get('/restaurants', restaurantsController.index)
@@ -19,6 +21,12 @@ routes.get('/customers', customersController.index)
 routes.get('/customers/:id', customersController.show)
 routes.post('/customers', customersController.store)
 routes.put('/customers/:id', customersController.update)
+
+routes.get('/tables', tablesController.index)
+routes.get('/tables/:id', tablesController.show)
+routes.post('/tables', tablesController.store)
+routes.put('/tables/:id', tablesController.update)
+routes.delete('/tables/:id', tablesController.destroy)
 
 routes.get('/queues', queuesController.index)
 routes.get('/queues/:id', queuesController.show)
