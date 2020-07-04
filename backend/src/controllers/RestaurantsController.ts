@@ -1,84 +1,46 @@
-import { Request, Response } from 'express';
-import knex from '../database/connection';
+import { Request, Response } from 'express'
+import knex from '../database/connection'
 
 class RestaurantsController {
-    /* Lista todos os restaurantes */
     async index(request: Request, response: Response) {
-        const { city, uf, items } = request.query;
+        const restaurants = await knex('RESTAURANTS')
+        return response.json(restaurants)
+    }
 
-        const parsedItems = String(items)
-            .split(',')
-            .map(item => Number(item.trim()));
-        
-        const restaurants = await knex('restaurant')
-            .join('tables', 'restaurant.res_id', '=', 'tables.res_id')
-            .whereIn('table.tab_id', parsedItems)
-            .where('city', String(city))
-            .where('uf', String(uf))
-            .distinct()
-            .select('restaurant.*');
-        
-        return response.json({ restaurants });
-    };
-    /* Exibe um restaurante expecífico */
     async show(request: Request, response: Response) {
         const { id } = request.params;
 
-        const point = await knex('restaurant').where('res_id', id).first();
+        const restaurant = await knex('RESTAURANTS').where('idRestaurant', id).first();
 
-        if (!point) {
-            return response.status(400).json({ message: 'Restaurant not found' })
-        }
-        else
-        {
-            const items = await knex('tables')
-                .join('restaurant', 'tables.res_id', '=', 'restaurant.res_id')
-                .where('restaurant.res_id', id)
-                .select('tables.*');
-            
-            return response.json({ point, items });
-        }
-    };
-    /* Cria um restaurante */
-    async create(request: Request, response: Response) {
-        const {
-            image,
-            name,
-            email,
-            whatsapp,
-            latitude,
-            longitude,
-            adress,
-            city,
-            uf,
-            waiting_time,
-        } = request.body;
-    
-        const trx = await knex.transaction();
+        if (!restaurant) return response.status(400).json({ message: 'Restaurant not found' })
+        
+        return response.json(restaurant)     
+    }
 
+    async store(request: Request, response: Response) {     
+        const trx = await knex.transaction()
+        const { email, password, name, maxWaitTime } = request.body
+        
         const restaurant = {
-            image,
-            name,
             email,
-            whatsapp,
-            latitude,
-            longitude,
-            adress,
-            city,
-            uf,
-            waiting_time,
-        };
+            password,
+            name,
+            maxWaitTime
+        }
     
-        const insertedIds = await trx('restaurants').insert(restaurant);
-    
-        const res_id = insertedIds[0];
+        const insertedIds = await trx('RESTAURANTS').insert(restaurant)
+        const ret = {idRestaurant: insertedIds[0], ...restaurant}
 
-        await trx.commit();
+        await trx.commit()
     
-        return response.json({
-            id: res_id
-        });
-    };
-};
+        return response.json(ret)
+    }
+    async update(request: Request, response: Response) {
+        return response.status(501).json({error: 'Not Implemented'})        
+    }
+    async destroy(request: Request, response: Response) {
+        return response.status(501).json({error: 'Not Implemented'})        
+    }
+}
 
-export default RestaurantsController;
+export default RestaurantsController

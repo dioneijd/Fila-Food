@@ -2,15 +2,15 @@ import Knex from 'knex';
 
 export async function up(knex: Knex) {
     return knex.schema.createTable('TABLES', table => {
-        table.increments('table_id').primary()
+        table.increments('idTable').primary()
 
-        table.integer('restaurant_id')
+        table.integer('idRestaurant')
             .notNullable()
-            .references('restaurant_id')
+            .references('idRestaurant')
             .inTable('RESTAURANTS')
 
         table.string('name')
-        table.integer('max_people')
+        table.integer('maxPeople')
         table.string('status').defaultTo('F')
     });
 }

@@ -2,20 +2,21 @@ import Knex from 'knex';
 
 export async function up(knex: Knex) {
     return knex.schema.createTable('QUEUES', table => {
-        table.increments('queue_id').primary()
+        table.increments('idQueue').primary()
 
-        table.integer('restaurant_id')
+        table.integer('idRestaurant')
             .notNullable()
-            .references('restaurant_id')
+            .references('idRestaurant')
             .inTable('RESTAURANTS')
 
-        table.integer('customer_id')
+        table.integer('idCustomer')
             .notNullable()
-            .references('customer_id')
+            .references('idCustomer')
             .inTable('CUSTOMERS')
         
-        table.integer('number_people')
-        table.timestamp('reg_time').defaultTo(knex.fn.now())
+        table.integer('numberPeople')
+        table.timestamp('regTime').defaultTo(knex.fn.now())
+        table.string('status').defaultTo('W')
     })
 }
 

@@ -2,7 +2,7 @@ import Knex from 'knex';
 
 export async function up(knex: Knex) {
     return knex.schema.createTable('CUSTOMERS', table => {
-        table.increments('customer_id').primary()
+        table.increments('idCustomer').primary()
         table.string('email').notNullable()
         table.string('password').notNullable()
         table.string('name').notNullable()

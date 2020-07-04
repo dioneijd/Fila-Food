@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import knex from '../database/connection'
 
-class CustomerController  {
+class CustomersController  {
     async index(request: Request, response: Response) {
         return response.status(501).json({error: 'Not Implemented'})
     }
@@ -9,12 +9,11 @@ class CustomerController  {
     async show(request: Request, response: Response) {
         const { id } = request.params;
 
-        const customerId = await knex('CUSTOMERS').where('customer_id', id).first();
+        const customerId = await knex('CUSTOMERS').where('idCustomer', id).first();
 
         if (!customerId) return response.status(400).json({ message: 'Customer not found' })
         
-        return response.json(customerId)
-        
+        return response.json(customerId)        
     }
     
     async store(request: Request, response: Response) {        
@@ -44,4 +43,4 @@ class CustomerController  {
     }
 }
 
-export default CustomerController
+export default CustomersController
