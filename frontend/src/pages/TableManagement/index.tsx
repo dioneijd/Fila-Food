@@ -10,9 +10,9 @@ interface LoginSessionResponse {
 }
 
 interface TableResponse {
-    idTable: string,
-    name: string,
-    status: string,
+    idTable: string
+    name: string
+    status: string
     maxPeople: string
 }
 interface htmlEvent {

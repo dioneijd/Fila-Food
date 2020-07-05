@@ -11,11 +11,11 @@ import './styles.css';
 import logo from '../../assets/logo.svg';
 
 interface IBGEUFResponse {
-    sigla: string;
+    sigla: string
 }
 
 interface IBGECityResponse {
-    nome: string;
+    nome: string
 }
 
 const CreateRestaurant = () => {

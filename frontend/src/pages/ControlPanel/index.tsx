@@ -11,23 +11,23 @@ interface LoginSessionResponse {
 }
 
 interface TableResponse {
-    idTable: string,
-    name: string,
-    status: string,
+    idTable: string
+    name: string
+    status: string
     maxPeople: string
 }
 
 interface QueueResponse {
-    idQueue: string,
-    idRestaurant: string,
-    idCustomer: string,
-    numberPeople: string,
-    status: string,
+    idQueue: string
+    idRestaurant: string
+    idCustomer: string
+    numberPeople: string
+    status: string
     regTime: string
 }
 
 interface CustomerResponse {
-    idCustomer: string,
+    idCustomer: string
     name: string
 }
 
