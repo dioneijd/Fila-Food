@@ -6,14 +6,11 @@ class QueuesController {
         const { idRestaurant, idCustomer } = request.query
         
         const queues = await knex('QUEUES')
-
-        // const restaurants = await knex('restaurant')
-        //     .join('tables', 'restaurant.res_id', '=', 'tables.res_id')
-        //     .whereIn('table.tab_id', parsedItems)
-        //     .where('city', String(city))
-        //     .where('uf', String(uf))
-        //     .distinct()
-        //     .select('restaurant.*');
+                                .where(builder => {
+                                    if (idRestaurant) builder.where('idRestaurant', String(idRestaurant))
+                                    if (idCustomer) builder.where('idCustomer', String(idCustomer))
+                                })
+                                .orderBy('idQueue')
         
         return response.json(queues)
 
