@@ -6,31 +6,28 @@ import {
   Image, 
   Text,
   SafeAreaView,
-  Linking 
+  Linking, 
+  Alert
 } from 'react-native';
 import { Feather as Icon, FontAwesome } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
 import api from '../../services/api';
-import * as MailComposer from 'expo-mail-composer';
 
 interface Params {
-  point_id: number;
+  idRestaurant: number;
+  name: string;
+  people: string;
 }
 
 interface Data {
-  point: {
-    image: string;
-    image_url: string;
+    thumbnail: string;
     name: string;
-    email: string;
     whatsapp: string;
+    adress: string;
     city: string;
     uf: string;
-  };
-  items: {
-    title: string;
-  }[];
+    maxWaitTime: string;
 }
 
 const Detail = () => {
@@ -43,7 +40,7 @@ const Detail = () => {
   const routeParams = route.params as Params;
 
   useEffect(() => {
-    api.get(`points/${routeParams.point_id}`).then(response => {
+    api.get(`restaurants/${routeParams.idRestaurant}`).then(response => {
       setData(response.data);
     });
   }, []);
@@ -53,17 +50,22 @@ const Detail = () => {
   }
 
   function handleWhatsapp() {
-    Linking.openURL(`whatsapp://send?phone=${data.point.whatsapp}&text=Tenho interesse sobre coleta de resíduos.`)
+    Linking.openURL(`whatsapp://send?phone=${data.whatsapp}&text=Olá meu nome é ${routeParams.name}, tenho uma dúvida sobre a reserva.`)
   }
 
-  function handleComposeMail() {
-    MailComposer.composeAsync({
-      subject: 'Interesse na coleta de resíduos',
-      recipients: [data.point.email],
-    })
+  function handleGetIn() {
+    api.post('customers', { name: routeParams.name }).then(response => {
+      api.post('queues', { 
+        idRestaurant: routeParams.idRestaurant, 
+        idCustomer: response.data.idCustomer, 
+        numberPeople: routeParams.people
+      }).then(response => {
+        Alert.alert('Registrado', `Você foi registrado na fila do ${data.name} com reserva para ${routeParams.people} pessoa(s)`);
+      });
+    });
   }
 
-  if (!data.point) {
+  if (!data) {
     return null;
   }
 
@@ -71,19 +73,17 @@ const Detail = () => {
     <SafeAreaView style={{ flex: 1 }} >   
       <View style={styles.container}>
         <TouchableOpacity onPress={handleNavigateBack}>
-          <Icon name="arrow-left" size={20} color="#34cb79" />
+          <Icon name="arrow-left" size={24} color="#FF5D02" />
         </TouchableOpacity>
 
-        <Image style={styles.pointImage} source={{ uri: data.point.image_url }} />
+        <Image style={styles.restaurantImage} source={{ uri: data.thumbnail }} />
 
-        <Text style={styles.pointName}>{data.point.name}</Text>
-        <Text style={styles.pointItems}>
-          {data.items.map(item => item.title).join(',')}
-        </Text>
+        <Text style={styles.restaurantName}>{data.name}</Text>
 
         <View style={styles.address}>
-          <Text style={styles.addressTitle}>Endereço</Text>
-          <Text style={styles.addressContent}>{data.point.city}, {data.point.uf}</Text>
+          <Text style={styles.addressTitle}>Endereço:</Text>
+          <Text style={styles.addressContent}>{data.adress}, {data.city}, {data.uf}</Text>
+          <Text style={styles.addressContent}>Tempo de espera máximo para sua entrada de {data.maxWaitTime} minutos após chegar sua vez na fila.</Text>
         </View>
       </View>
 
@@ -93,9 +93,9 @@ const Detail = () => {
           <Text style={styles.buttonText}>WhatsApp</Text>
         </RectButton>
 
-        <RectButton style={styles.button} onPress={handleComposeMail}>
-          <Icon name="mail" size={20} color="#FFF" />
-          <Text style={styles.buttonText}>E-mail</Text>
+        <RectButton style={styles.button} onPress={handleGetIn}>
+          <Icon name="log-in" size={20} color="#FFF" />
+          <Text style={styles.buttonText}>Entrar na Fila</Text>
         </RectButton>
       </View>
     </SafeAreaView>
@@ -106,10 +106,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 32,
-    paddingTop: 20,
+    paddingTop: 40,
   },
 
-  pointImage: {
+  restaurantImage: {
     width: '100%',
     height: 120,
     resizeMode: 'cover',
@@ -117,19 +117,11 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
 
-  pointName: {
-    color: '#322153',
+  restaurantName: {
+    color: '#92390A',
     fontSize: 28,
     fontFamily: 'Ubuntu_700Bold',
     marginTop: 24,
-  },
-
-  pointItems: {
-    fontFamily: 'Roboto_400Regular',
-    fontSize: 16,
-    lineHeight: 24,
-    marginTop: 8,
-    color: '#6C6C80'
   },
 
   address: {
@@ -137,7 +129,7 @@ const styles = StyleSheet.create({
   },
   
   addressTitle: {
-    color: '#322153',
+    color: '#92390A',
     fontFamily: 'Roboto_500Medium',
     fontSize: 16,
   },
@@ -160,7 +152,7 @@ const styles = StyleSheet.create({
   
   button: {
     width: '48%',
-    backgroundColor: '#34CB79',
+    backgroundColor: '#FF5D02',
     borderRadius: 10,
     height: 50,
     flexDirection: 'row',

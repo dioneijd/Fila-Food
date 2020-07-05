@@ -8,7 +8,8 @@ import {
   StyleSheet, 
   TextInput, 
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
@@ -21,10 +22,21 @@ const Home = () => {
   const navigation = useNavigation();
 
   function handleNavigateToRestaurants() {
-    navigation.navigate('Restaurants', {
-      name,
-      people
-    });
+    if (name === '') 
+    {
+      Alert.alert('Nome', 'Precisamos saber seu nome.');
+    }
+    else if (people === '') 
+    {
+      Alert.alert('Número de pessoas', 'Precisamos saber quantas pessoas estarão com você.');
+    }
+    else
+    {
+      navigation.navigate('Restaurants', {
+        name,
+        people
+      });
+    }
   }
   
   return (

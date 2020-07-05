@@ -2,23 +2,22 @@ import React, { useState, useEffect } from 'react';
 import Constants from 'expo-constants';
 import { Feather as Icon } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { SvgUri } from 'react-native-svg';
 import api from '../../services/api';
 import * as Location from 'expo-location';
 
 interface Restaurant {
   idRestaurant: number;
-  image_url: string;
+  thumbnail: string;
   name: string;
   latitude: number;
   longitude: number;
 }
 
 interface Params {
-  uf: string;
-  city: string;
+  name: string;
+  people: string;
 }
 
 const Restaurants = () => {
@@ -36,7 +35,7 @@ const Restaurants = () => {
       const { status } = await Location.requestPermissionsAsync();
 
       if (status !== 'granted') {
-        Alert.alert('Ooops...', 'Precisamos de sua permissão para obter a localização.');
+        Alert.alert('Permissão', 'Precisamos de sua permissão para obter a localização.');
         return;
       }
 
@@ -53,14 +52,7 @@ const Restaurants = () => {
   }, []);
 
   useEffect(() => {
-    api.get('restaurants'/*, {
-      
-      params: {
-        city: routeParams.city,
-        uf: routeParams.uf,
-        items: selectedItems
-      }
-    }*/).then(response => {
+    api.get('restaurants').then(response => {
       setRestaurants(response.data);
     })
   }, [])
@@ -69,8 +61,8 @@ const Restaurants = () => {
     navigation.goBack();
   }
 
-  function handeNavigateToDetail(id: number) {
-    navigation.navigate('Detail', { idRestaurant: id });
+  function handeNavigateToDetail(id: number, name: string, people: string) {
+    navigation.navigate('Detail', { idRestaurant: id, name: name, people: people });
   }
 
   return (
@@ -98,14 +90,14 @@ const Restaurants = () => {
                 <Marker
                   key={String(restaurant.idRestaurant)}
                   style={styles.mapMarker}
-                  onPress={() => handeNavigateToDetail(restaurant.idRestaurant)} 
+                  onPress={() => handeNavigateToDetail(restaurant.idRestaurant, routeParams.name, routeParams.people)} 
                   coordinate={{
                     latitude: restaurant.latitude,
                     longitude: restaurant.longitude,
                   }} 
                 >
                   <View style={styles.mapMarkerContainer}>
-                    <Image style={styles.mapMarkerImage} source={{ uri: restaurant.image_url }} />
+                    <Image style={styles.mapMarkerImage} source={{ uri: restaurant.thumbnail }} />
                     <Text style={styles.mapMarkerTitle}>{restaurant.name}</Text>
                   </View>
                 </Marker>
@@ -114,7 +106,7 @@ const Restaurants = () => {
           ) }
         </View>
       </View>
-      <View style={styles.itemsContainer}>
+      <View style={styles.footer}>
       </View>
     </>
   );
@@ -128,6 +120,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
+    color: '#92390A',
     fontSize: 20,
     fontFamily: 'Ubuntu_700Bold',
     marginTop: 24,
@@ -161,7 +154,7 @@ const styles = StyleSheet.create({
   mapMarkerContainer: {
     width: 90,
     height: 70,
-    backgroundColor: '#34CB79',
+    backgroundColor: '#FF5D02',
     flexDirection: 'column',
     borderRadius: 8,
     overflow: 'hidden',
@@ -182,39 +175,11 @@ const styles = StyleSheet.create({
     lineHeight: 23,
   },
 
-  itemsContainer: {
+  footer: {
     flexDirection: 'row',
     marginTop: 16,
     marginBottom: 32,
-  },
-
-  item: {
-    backgroundColor: '#fff',
-    borderWidth: 2,
-    borderColor: '#eee',
-    height: 120,
-    width: 120,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingTop: 20,
-    paddingBottom: 16,
-    marginRight: 8,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-
-    textAlign: 'center',
-  },
-
-  selectedItem: {
-    borderColor: '#34CB79',
-    borderWidth: 2,
-  },
-
-  itemTitle: {
-    fontFamily: 'Roboto_400Regular',
-    textAlign: 'center',
-    fontSize: 13,
-  },
+  }
 });
 
 export default Restaurants;
