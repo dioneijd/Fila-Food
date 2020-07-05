@@ -14,6 +14,12 @@ interface TableResponse {
     status: string
 }
 
+interface QueueResponse {
+    idQueue: string,
+    idRestaurant: string,
+    idCustomer: string
+}
+
 interface htmlEvent {
     target: {
         id:string
@@ -24,25 +30,29 @@ interface htmlEvent {
 const ControlPanel = () => {
 
     const [tables, setTables] = useState<TableResponse[]>([])
+    const [queues, setQueues] = useState<QueueResponse[]>([])
     const [loginSession, setLoginSession] = useState<LoginSessionResponse>()
 
     useEffect(() => {
         const loginSessionString:string = localStorage.getItem('loginSession') || '{}'
         setLoginSession(JSON.parse(loginSessionString))
     }, [])
-
     
     useEffect(() => {
         getAllTables()
+        getQueues()
     }, [loginSession])
 
 
     async function getAllTables(){
         const tables = await api.get<TableResponse[]>(`/tables?idRestaurant=${ loginSession?.idRestaurant }`)
-        //console.log(tables.data)
         setTables(tables.data)
     }
 
+    async function getQueues(){
+        const queues = await api.get<QueueResponse[]>(`/queues?idRestaurant=${ loginSession?.idRestaurant }`)
+        setQueues(queues.data)
+    }
 
     async function handleTableStatusChange(event:htmlEvent){
         const idTable = event.target.id
@@ -54,16 +64,18 @@ const ControlPanel = () => {
         }
         
         const response = await api.put(`/tables/${ idTable }`, tableStatus)
-        
 
         getAllTables()
-
     }
 
     return (
         <div id="content">
             <div id="statusBoard">
-                <h1>STATUS BOARD</h1>
+                {
+                    queues.map(queue => (
+                        <div>{queue.idQueue}</div>
+                    ))
+                }
             </div>
             <div id="tablesBoard">
                 
