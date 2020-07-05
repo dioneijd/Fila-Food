@@ -1,7 +1,8 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../../services/api'
-import { IoIosPeople } from 'react-icons/io'
+import { IoIosPeople, IoIosLogIn } from 'react-icons/io'
+import { FiClock } from 'react-icons/fi'
 
 import './styles.css'
 
@@ -87,20 +88,52 @@ const ControlPanel = () => {
         getAllTables()
     }
 
+
+    async function handleCustomerCheckIn(idQueue: string){
+        await api.delete(`/queues/${idQueue}`)
+        getQueues()
+    }
+
     return (
         <div id="content">
             <div id="statusBoard">
                 {
                     queues.map(queue => (
                         <div key={`key_${queue.idQueue}`}>
-                            <h5>{customers.find(cust => cust.idCustomer == queue.idCustomer)?.name}</h5>
+                            <p>
+                                <h5>{customers.find(cust => cust.idCustomer == queue.idCustomer)?.name}</h5>
+
+                                <div className="queueStatus">
+                                    {
+                                        queue.status == 'W'
+                                        && (
+                                            <>
+                                                <span>AGUARDANDO</span>
+                                                <FiClock />
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        queue.status != 'W'
+                                        &&
+                                        (
+                                            <>
+                                                <button onClick={() => handleCustomerCheckIn(queue.idQueue)}>
+                                                    A Caminho... Chegou?
+                                                </button>
+                                                <IoIosLogIn />
+                                            </>
+                                        )
+                                    }      
+                                </div>                     
+                            </p>
                             <p>
                                 <span>
-                                    Reserva para {queue.numberPeople}, {queue.status == 'W' ? 'Na Fila' : 'A Caminho'}
+                                    Reserva para {queue.numberPeople}{queue.status == 'W' ? '' : ', cliente está a caminho'}
                                 </span>
                                 <span>
                                     {queue.regTime}                                
-                                </span>  
+                                </span>
                             </p>
                         </div>
                     ))
