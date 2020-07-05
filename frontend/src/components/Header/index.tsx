@@ -6,8 +6,8 @@ import './style.css'
 import logo from '../../assets/logo.svg'
 
 interface LoginSessionResponse {
-    idRestaurant: string,
-    thumbnail: string,
+    idRestaurant: string
+    thumbnail: string
     name: string
 }
 
