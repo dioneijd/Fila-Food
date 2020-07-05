@@ -1,6 +1,7 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../../services/api'
+import { IoIosPeople } from 'react-icons/io'
 
 import './styles.css'
 
@@ -11,13 +12,22 @@ interface LoginSessionResponse {
 interface TableResponse {
     idTable: string,
     name: string,
-    status: string
+    status: string,
+    maxPeople: string
 }
 
 interface QueueResponse {
     idQueue: string,
     idRestaurant: string,
-    idCustomer: string
+    idCustomer: string,
+    numberPeople: string,
+    status: string,
+    regTime: string
+}
+
+interface CustomerResponse {
+    idCustomer: string,
+    name: string
 }
 
 interface htmlEvent {
@@ -30,19 +40,23 @@ interface htmlEvent {
 const ControlPanel = () => {
 
     const [tables, setTables] = useState<TableResponse[]>([])
+    const [customers, setCustomers] = useState<CustomerResponse[]>([])
     const [queues, setQueues] = useState<QueueResponse[]>([])
     const [loginSession, setLoginSession] = useState<LoginSessionResponse>()
 
     useEffect(() => {
         const loginSessionString:string = localStorage.getItem('loginSession') || '{}'
         setLoginSession(JSON.parse(loginSessionString))
+
+
     }, [])
+    
     
     useEffect(() => {
         getAllTables()
         getQueues()
+        getCustomers()
     }, [loginSession])
-
 
     async function getAllTables(){
         const tables = await api.get<TableResponse[]>(`/tables?idRestaurant=${ loginSession?.idRestaurant }`)
@@ -52,6 +66,11 @@ const ControlPanel = () => {
     async function getQueues(){
         const queues = await api.get<QueueResponse[]>(`/queues?idRestaurant=${ loginSession?.idRestaurant }`)
         setQueues(queues.data)
+    }
+
+    async function getCustomers(){
+        const customers = await api.get<CustomerResponse[]>(`/customers`)
+        setCustomers(customers.data)
     }
 
     async function handleTableStatusChange(event:htmlEvent){
@@ -73,12 +92,21 @@ const ControlPanel = () => {
             <div id="statusBoard">
                 {
                     queues.map(queue => (
-                        <div>{queue.idQueue}</div>
+                        <div key={`key_${queue.idQueue}`}>
+                            <h5>{customers.find(cust => cust.idCustomer == queue.idCustomer)?.name}</h5>
+                            <p>
+                                <span>
+                                    Reserva para {queue.numberPeople}, {queue.status == 'W' ? 'Na Fila' : 'A Caminho'}
+                                </span>
+                                <span>
+                                    {queue.regTime}                                
+                                </span>  
+                            </p>
+                        </div>
                     ))
                 }
             </div>
-            <div id="tablesBoard">
-                
+            <div id="tablesBoard">                
                 {
                     tables.map(table => (
                         < div key={`key_${table.idTable}`}>  
@@ -92,6 +120,10 @@ const ControlPanel = () => {
                             />
                             <label htmlFor={table.idTable} >
                                 {table.name}
+                                <span>
+                                    <IoIosPeople />
+                                    {table.maxPeople}
+                                </span>
                             </label>
                         </div>
                     ))

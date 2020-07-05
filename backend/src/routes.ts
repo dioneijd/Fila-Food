@@ -25,7 +25,7 @@ routes.post('/restaurants', restaurantsController.store)
 routes.put('/restaurants/:id', restaurantsController.update)
 
 routes.get('/customers', customersController.index)
-routes.post('/customers/:email', customersController.show)
+routes.get('/customers/:id', customersController.show)
 routes.post('/customers', customersController.store)
 routes.put('/customers/:id', customersController.update)
 
