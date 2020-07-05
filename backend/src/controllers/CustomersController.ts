@@ -7,7 +7,7 @@ class CustomersController  {
     }
 
     async show(request: Request, response: Response) {
-        const { id } = request.params;
+        const { id } = request.params
 
         const customerId = await knex('CUSTOMERS').where('idCustomer', id).first();
 
