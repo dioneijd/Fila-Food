@@ -7,8 +7,7 @@ import ControlPanel from './pages/ControlPanel';
 const Routes = () => {
     return (
         <BrowserRouter>
-            <Route component={ControlPanel} path="/" exact />
-            <Route component={CreateRestaurant} path="/create-restaurant" />
+            <Route component={ControlPanel} path="/restaurant" exact />
         </BrowserRouter>
     );
 }

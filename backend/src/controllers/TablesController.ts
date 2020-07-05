@@ -5,11 +5,13 @@ class TablesController {
     async index(request: Request, response: Response) {
         const { idRestaurant, maxPeople } = request.query        
         
-        const tables = await knex('TABLES').where(builder => {
-            if (idRestaurant) builder.where('idRestaurant', String(idRestaurant))
-            if (maxPeople) builder.where('maxPeople', String(maxPeople))
-        })
-        
+        const tables = await knex('TABLES')
+                                .where(builder => {
+                                    if (idRestaurant) builder.where('idRestaurant', String(idRestaurant))
+                                    if (maxPeople) builder.where('maxPeople', String(maxPeople))
+                                })
+                                .orderBy('name')
+                                
         return response.json(tables)
     }
 
@@ -40,17 +42,17 @@ class TablesController {
     }
     async update(request: Request, response: Response) {
         const { id } = request.params
-        const queue = request.body
+        const table = request.body
 
-        const ret = await knex('QUEUES').where('idQueue', id).update(queue)  
+        const ret = await knex('TABLES').where('idTable', id).update(table)  
         
         return response.json(ret)
     }
     
     async destroy(request: Request, response: Response) {
         const { id } = request.params
-        const queue = await knex('QUEUES').where('idQueue', id).delete()
-        return response.json(queue)
+        const table = await knex('TABLES').where('idTable', id).delete()
+        return response.json(table)
     }
  
 }
