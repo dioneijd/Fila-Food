@@ -26,7 +26,8 @@ const CreateRestaurant = () => {
         email: '',
         whatsapp: '',
         adress: '',
-        password: ''
+        password: '',
+        thumbnail: ''
     });
     const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0]);
     const [selectedUf, setSelectedUf] = useState('0');
@@ -90,7 +91,7 @@ const CreateRestaurant = () => {
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
-        const { name, email, whatsapp, adress, password } = formData;
+        const { name, email, whatsapp, adress, password, thumbnail } = formData;
         const uf = selectedUf;
         const city = selectedCity;
         const maxWaitTime = selectedTime;
@@ -105,7 +106,8 @@ const CreateRestaurant = () => {
             longitude,
             maxWaitTime,
             adress,
-            password
+            password,
+            thumbnail,
         };
         console.log(data);
         if (data.name === ''){ return alert('O campo Nome é obrigatório!') };
@@ -208,6 +210,15 @@ const CreateRestaurant = () => {
                                 ))}
                             </select>
                         </div>
+                    </div>
+                    <div className="field">
+                        <label htmlFor="thumbnail">URL da Imagem</label>
+                        <input
+                            type="text"
+                            name="thumbnail"
+                            id="thumbnail"
+                            onChange={handleImputChange}
+                        />
                     </div>
                     <div className="field-group">
                         <div className="field">
