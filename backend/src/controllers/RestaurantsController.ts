@@ -19,13 +19,29 @@ class RestaurantsController {
 
     async store(request: Request, response: Response) {     
         const trx = await knex.transaction()
-        const { email, password, name, maxWaitTime } = request.body
+        const { name,
+            email,
+            whatsapp,
+            latitude,
+            longitude,
+            adress,
+            uf,
+            city,
+            maxWaitTime,
+            password
+        } = request.body
         
         const restaurant = {
-            email,
-            password,
             name,
-            maxWaitTime
+            email,
+            whatsapp,
+            latitude,
+            longitude,
+            adress,
+            uf,
+            city,
+            maxWaitTime,
+            password
         }
     
         const insertedIds = await trx('RESTAURANTS').insert(restaurant)
