@@ -1,6 +1,6 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { FiArrowLeft } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 import api from '../../services/api';
@@ -33,6 +33,8 @@ const CreateRestaurant = () => {
     const [selectedCity, setSelectedCity] = useState('0');
     const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
     const [selectedTime, setSelectedTime] = useState<string>('5');
+
+    const history = useHistory();
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(position => {
@@ -117,6 +119,7 @@ const CreateRestaurant = () => {
         if (data.password === ''){ return alert('O campo Senha é obrigatório!') };
         await api.post('restaurants', data);
         alert('Restaurante cadastrado');
+        history.push('/');
     }
 
     return (
