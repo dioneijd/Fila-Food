@@ -4,13 +4,15 @@ import knex from '../database/connection'
 class RestaurantsController {
     async index(request: Request, response: Response) {
         const restaurants = await knex('RESTAURANTS')
+        restaurants.forEach(restaurant => restaurant.password = '*****')
         return response.json(restaurants)
     }
 
     async show(request: Request, response: Response) {
-        const { id } = request.params;
+        const { id } = request.params
 
-        const restaurant = await knex('RESTAURANTS').where('idRestaurant', id).first();
+        const restaurant = await knex('RESTAURANTS').where('idRestaurant', id).first()
+        restaurant.password = '*****'
 
         if (!restaurant) return response.status(400).json({ message: 'Restaurant not found' })
         

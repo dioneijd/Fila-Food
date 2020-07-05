@@ -6,7 +6,6 @@ export async function seed(knex: Knex) {
         {idCustomer: 1, idRestaurant: 1, numberPeople: 2},
         {idCustomer: 2, idRestaurant: 1, numberPeople: 2},
         {idCustomer: 3, idRestaurant: 1, numberPeople: 2},
-        {idCustomer: 1, idRestaurant: 1, numberPeople: 2},
 
         {idCustomer: 2, idRestaurant: 2, numberPeople: 2},
         {idCustomer: 1, idRestaurant: 2, numberPeople: 2},

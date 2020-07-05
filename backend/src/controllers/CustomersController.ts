@@ -3,17 +3,20 @@ import knex from '../database/connection'
 
 class CustomersController  {
     async index(request: Request, response: Response) {
-        return response.status(501).json({error: 'Not Implemented'})
+        const customers = await knex('CUSTOMERS')
+        customers.forEach(customer => customer.password = '*****')
+        return response.json(customers)
     }
 
     async show(request: Request, response: Response) {
         const { id } = request.params
 
-        const customerId = await knex('CUSTOMERS').where('idCustomer', id).first();
+        const customer = await knex('CUSTOMERS').where('idCustomer', id).first()
+        customer.password = '*****'
 
-        if (!customerId) return response.status(400).json({ message: 'Customer not found' })
+        if (!customer) return response.status(400).json({ message: 'Customer not found' })
         
-        return response.json(customerId)        
+        return response.json(customer)        
     }
     
     async store(request: Request, response: Response) {        

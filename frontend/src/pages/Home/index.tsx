@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FormEvent } from 'react'
-import { FiLogIn } from 'react-icons/fi';
+import { FiLogIn } from 'react-icons/fi'
 import { Link, useHistory } from 'react-router-dom'
 import api from '../../services/api'
 
